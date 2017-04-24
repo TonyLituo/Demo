@@ -1,5 +1,6 @@
 package com.dhcc.baidu;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.zhy.m.permission.MPermissions;
+import com.zhy.m.permission.PermissionDenied;
+import com.zhy.m.permission.PermissionGrant;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,12 +20,15 @@ public class MainActivity extends AppCompatActivity {
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
     Button mButton;
+    Button mButton1;
+    private static final int LOCATION_CODE_SDCARD = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mButton = (Button) this.findViewById(R.id.btn);
+        mButton1 = (Button) this.findViewById(R.id.over);
         mLocationClient = new LocationClient(getApplicationContext());
         //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
@@ -30,10 +37,39 @@ public class MainActivity extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "):(", Toast.LENGTH_SHORT).show();
-                setLocation();
+                MPermissions.requestPermissions(MainActivity.this,
+                        LOCATION_CODE_SDCARD,
+                        Manifest.permission.READ_PHONE_STATE,// 1、获取手机状态：
+                        Manifest.permission.ACCESS_COARSE_LOCATION,//2、获取位置信息：
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.READ_EXTERNAL_STORAGE, //3、读写SD卡：
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         });
+        mButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLocationClient.stop();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        MPermissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    @PermissionGrant(LOCATION_CODE_SDCARD)
+    public void requestSdcardSuccess() {
+        setLocation();
+        Toast.makeText(this, "GRANT ACCESS LOCATION!", Toast.LENGTH_SHORT).show();
+    }
+
+    @PermissionDenied(LOCATION_CODE_SDCARD)
+    public void requestSdcardFailed() {
+        Toast.makeText(this, "DENY ACCESS LOCATION!", Toast.LENGTH_SHORT).show();
     }
 
 
