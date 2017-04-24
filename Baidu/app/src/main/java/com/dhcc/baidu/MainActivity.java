@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocationListener;
@@ -21,12 +22,19 @@ public class MainActivity extends AppCompatActivity {
     public BDLocationListener myListener = new MyLocationListener();
     Button mButton;
     Button mButton1;
+    TextView mTextView;
     private static final int LOCATION_CODE_SDCARD = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /*占位符*/
+mTextView= (TextView) this.findViewById(R.id.tv);
+        String data = getResources().getString(R.string.data);
+        data = String.format(data, 100, 10.3, "2017-07-01");
+        mTextView.setText(data);
+
         mButton = (Button) this.findViewById(R.id.btn);
         mButton1 = (Button) this.findViewById(R.id.over);
         mLocationClient = new LocationClient(getApplicationContext());
