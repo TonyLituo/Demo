@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*占位符*/
-mTextView= (TextView) this.findViewById(R.id.tv);
+        mTextView = (TextView) this.findViewById(R.id.tv);
         String data = getResources().getString(R.string.data);
         data = String.format(data, 100, 10.3, "2017-07-01");
         mTextView.setText(data);
